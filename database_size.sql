@@ -15,8 +15,7 @@ SELECT
 FROM
     pg_database
 WHERE
-    NOT datistemplate
-    AND datname <> 'dbadm';
+    NOT datistemplate ;
 
 --
 -- size by database
@@ -81,7 +80,7 @@ SELECT
     WHEN 'v' THEN
         'view'
     WHEN 't' THEN
-        'TOAST'
+        'toast'
     ELSE
         pg_class.relkind::text
     END
