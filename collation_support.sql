@@ -5,7 +5,7 @@
 
 pg relies on the collations available on os-level: 
 
-[postgres@tsapgtstc01n02 ~]$ localectl list-locales | grep -i DE
+$> localectl list-locales | grep -i DE
 de_AT
 de_AT.iso88591
 de_AT.iso885915@euro
@@ -48,7 +48,7 @@ sd_IN@devanagari
 
 ## creating a new database 
 
-[postgres@tsapgtstc01n02 ~]$ psql
+$> psql
 psql (12.5)
 Type "help" for help.
 
