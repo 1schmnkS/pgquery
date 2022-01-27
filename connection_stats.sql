@@ -10,6 +10,8 @@
 --    idle:                number of connections in state 'idle'
 --    idle_in_tx:          number of connections in state 'idle in transaction'
 --    max_idle_in_tx_time: number of seconds spent by the longest connection in state 'idle in transaction'        
+--    idle_in_tx_aborted:  number of connections in state 'idle in transaction (aborted)'
+--    max_idle_in_tx_aborted_time: number of seconds spent by the longest connection in state 'idle in transaction (aborted)'        
 --    max_qry_time:        number of seconds spent by the longest query of any active connection         
 --    max_blk_qry_time:    highest number of seconds a query has been blocked by a lock        
 --    max_conn:            maximum number of connections allowed
