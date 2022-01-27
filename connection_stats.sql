@@ -17,16 +17,25 @@
 -- ********************************************************************************************************
 SELECT    
     total,
-    ((total - idle) - idle_in_tx) AS active,
+    ((total - idle) - idle_in_tx - idle_in_tx_aborted) AS active,
     idle,
     idle_in_tx,
+    
     (
         SELECT
             coalesce(extract(epoch FROM (max(now() - state_change))), 0)
         FROM
             pg_catalog.pg_stat_activity
         WHERE
-            state = 'idle in transaction') AS max_idle_in_tx_time,
+            state = 'idle in transaction') AS max_idle_in_tx_time,    
+    idle_in_tx_aborted,
+    (
+        SELECT
+            coalesce(extract(epoch FROM (max(now() - state_change))), 0)
+        FROM
+            pg_catalog.pg_stat_activity
+        WHERE
+            state = 'idle in transaction (aborted)') AS max_idle_in_tx_aborted_time,    
     (
         SELECT
             coalesce(extract(epoch FROM (max(now() - query_start))), 0)
@@ -58,7 +67,13 @@ FROM (
                     1
                 ELSE
                     0
-                END), 0) AS idle_in_tx
+                END), 0) AS idle_in_tx,
+        coalesce(sum(
+                CASE WHEN state = 'idle in transaction (aborted)' THEN
+                    1
+                ELSE
+                    0
+                END), 0) AS idle_in_tx_aborted
     FROM
         pg_catalog.pg_stat_activity) pgstat
     JOIN (
