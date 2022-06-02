@@ -2,10 +2,12 @@
 --
 -- tsa_mon_backup_age(seconds)
 --
--- returns true if last backup is older than <seconds> 
+-- returns true if last backup (full, diff or incremental) is older than <seconds> 
 -- 
 -- example:
 -- select tsa_mon_backup_age(86400) ;    -> returns true if last backup (full, diff or incremental) is older than 24 hours
+--
+-- requires: tsa_mon_pgbackrest_info() 
 --
 create or replace function tsa_mon_backup_age(seconds integer) RETURNS BOOLEAN AS
 $BODY$
@@ -34,3 +36,5 @@ END
 $BODY$
 LANGUAGE plpgsql
 ;
+
+comment on function tsa_mon_backup_age is 'returns true if last backup (full, diff or incremental) is older than <seconds>' ;

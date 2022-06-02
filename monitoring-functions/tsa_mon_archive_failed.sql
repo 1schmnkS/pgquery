@@ -31,4 +31,5 @@ $BODY$
 LANGUAGE plpgsql
 ;
 
+comment on function tsa_mon_archive_failed is 'returns true if timestamp of last failed archive is newer than timestamp of last archive succeeded' ;
    

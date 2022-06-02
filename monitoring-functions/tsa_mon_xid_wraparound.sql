@@ -40,4 +40,4 @@ $BODY$
 LANGUAGE plpgsql
 ;
 
-   
+comment on function tsa_mon_xid_wraparound is 'returns true if the difference between the oldest transaction and the newest transaction is > <xid_difference>' ; 

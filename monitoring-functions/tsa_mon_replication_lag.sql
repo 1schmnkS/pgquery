@@ -33,4 +33,5 @@ END
 $BODY$
 LANGUAGE plpgsql
 ;
- 
+
+comment on function tsa_mon_replication_lag is 'returns true if replication lag is bigger than replication_lag (specified as nnnbytes, nnnkB, nnnMB, nnnGB, etc.)';

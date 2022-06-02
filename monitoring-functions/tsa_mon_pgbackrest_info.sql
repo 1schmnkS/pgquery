@@ -1,15 +1,18 @@
 --
 -- tsa_mon_pgbackrest_info 
 -- 
--- provide informations about pgbackrest backups 
+-- provides informations about pgbackrest backups 
 -- 
 -- see sample queries below 
 -- 
 
 create or replace function tsa_mon_pgbackrest_info()
-    returns jsonb AS $$
+    returns jsonb AS 
+$BODY$
+
 declare
     data jsonb;
+    
 begin
     -- Create a temp table to hold the JSON data
     create temp table temp_pgbackrest_data (data jsonb);
@@ -26,48 +29,9 @@ begin
     drop table temp_pgbackrest_data;
 
     return data;
-end $$ language plpgsql;
+end 
 
---
--- sample query: 
---
-with stanza as
-(
-    select data->'name' as name,
-           data->'backup'->(
-               jsonb_array_length(data->'backup') - 1) as last_backup,
-           data->'archive'->(
-               jsonb_array_length(data->'archive') - 1) as current_archive
-      from jsonb_array_elements(pgbackrest_info()) as data
-)
-select name,
-       to_timestamp(
-           (last_backup->'timestamp'->>'stop')::numeric) as last_successful_backup,
-       current_archive->>'max' as last_archived_wal
-  from stanza;
+$BODY$ 
+language plpgsql;
 
---
--- seconds since last backup
--- 86400 = 24h 
---  
-with stanza as
-(
-    select data->'name' as name,
-           data->'backup'->(
-               jsonb_array_length(data->'backup') - 1) as last_backup           
-      from jsonb_array_elements(pgbackrest_info()) as data
-)
-select name,
-       to_timestamp((last_backup->'timestamp'->>'stop')::numeric) as last_successful_backup,
-       extract(epoch from (now() - to_timestamp((last_backup->'timestamp'->>'stop')::numeric)))::int as seconds_since_backup       
-  from stanza where extract(epoch from (now() - to_timestamp((last_backup->'timestamp'->>'stop')::numeric)))::int > 86400;
-
-
-with stanza as
-(
-    select data->'name' as name,
-           data->'backup'->(
-               jsonb_array_length(data->'backup') - 1) as last_backup           
-      from jsonb_array_elements(pgbackrest_info()) as data
-)
-select count(*) from stanza where extract(epoch from (now() - to_timestamp((last_backup->'timestamp'->>'stop')::numeric)))::int > 86400;
+comment on function tsa_mon_pgbackrest_info is 'provides informations about pgbackrest backups' ; 

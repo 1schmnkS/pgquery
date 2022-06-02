@@ -35,4 +35,5 @@ $BODY$
 LANGUAGE plpgsql
 ;
 
+comment on function tsa_mon_replication_slot is 'returns true if any active pyhsical replication slot has wal_status <> reserved' ; 
    
